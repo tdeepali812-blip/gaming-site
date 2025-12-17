@@ -1,6 +1,6 @@
-# Gamingsite
+# Gaming Site
 
-[![Node CI](https://github.com/tdeepali812-blip/gamingsite/actions/workflows/node-ci.yml/badge.svg)](https://github.com/tdeepali812-blip/gamingsite/actions)
+[![Node CI](https://github.com/tdeepali812-blip/gaming-site/actions/workflows/node-ci.yml/badge.svg)](https://github.com/tdeepali812-blip/gaming-site/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 A Vite + React gaming landing site built with Tailwind CSS, Framer Motion, Lucide icons and Spline for 3D scenes.

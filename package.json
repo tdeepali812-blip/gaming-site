@@ -1,11 +1,11 @@
 {
-  "name": "gamingsite",
+  "name": "gaming-site",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tdeepali812-blip/gamingsite.git"
+    "url": "https://github.com/tdeepali812-blip/gaming-site.git"
   },
   "license": "MIT",
   "scripts": {
