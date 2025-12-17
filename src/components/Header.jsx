@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import 'boxicons/css/boxicons.min.css'
 
 const navItems = [
@@ -12,6 +12,7 @@ const navItems = [
 export default function Header(){
   const [open, setOpen] = useState(false)
   const [dark, setDark] = useState(() => localStorage.getItem('theme') === 'dark')
+  const reduce = useReducedMotion()
 
   useEffect(() => {
     if (dark) document.documentElement.classList.add('dark')
@@ -20,10 +21,10 @@ export default function Header(){
   }, [dark])
 
   return (
-    <header className="sticky top-0 z-50 w-full backdrop-blur-sm bg-white/40 dark:bg-black/40 border-b border-gray-200 dark:border-gray-800">
+    <motion.header initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0, transition: { duration: 0.45 } }} className="sticky top-0 z-50 w-full backdrop-blur-sm bg-white/40 dark:bg-black/40 border-b border-gray-200 dark:border-gray-800">
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <img src="/images/logo.png" alt="logo" className="h-10 w-auto" />
+          <motion.img whileHover={reduce ? {} : { scale: 1.06 }} transition={{ type: 'spring', stiffness: 300 }} src="/images/logo.png" alt="logo" className="h-10 w-auto" />
           <div className="hidden md:flex gap-3">
             <button className="h-9 px-4 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow hover:scale-105 transition">Play Now</button>
             <button className="h-9 px-4 rounded-full bg-gray-800/10 dark:bg-white/10 text-gray-800 dark:text-white shadow hover:scale-105 transition">NFT Store</button>
@@ -33,7 +34,7 @@ export default function Header(){
         <nav className="hidden md:flex items-center gap-6">
           {navItems.map((n, i) => (
             <motion.a key={n.label} href={n.href} className="relative text-sm md:text-base text-gray-800 dark:text-gray-200 hover:text-violet-500 transition"
-              whileHover={{ y: -3 }}
+              whileHover={reduce ? {} : { y: -3 }}
               transition={{ type: 'spring', stiffness: 300 }}
             >
               <i className={n.icon + ' mr-2'} aria-hidden></i>
@@ -74,6 +75,6 @@ export default function Header(){
       </div>
 
       <style>{`.underline-animation::after{ content:''; position:absolute; left:0; bottom:-4px; height:2px; width:0; background:linear-gradient(90deg,#8b5cf6,#7c3aed); transition: width .25s ease } .underline-animation:hover::after{ width:100% }`}</style>
-    </header>
+    </motion.header>
   )
 }
