@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 
 const words = ['Explore', 'Capture', 'Conquer']
 
 const Hero = () => {
   const [index, setIndex] = useState(0)
   const [sub, setSub] = useState('')
+  const reduce = useReducedMotion()
 
   useEffect(() => {
     let i = 0
@@ -81,13 +82,16 @@ const Hero = () => {
           transition={{ delay: 0.6 }}
           className="mt-8 flex items-center justify-center gap-4"
         >
-          <a
+          <motion.a
             href="#"
-            className="px-6 py-3 rounded-full bg-white text-violet-700 font-semibold shadow-lg hover:shadow-2xl transition transform hover:-translate-y-1"
+            whileHover={reduce ? {} : { y: -6, scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ type: 'spring', stiffness: 300 }}
+            className="px-6 py-3 rounded-full bg-white text-violet-700 font-semibold shadow-lg hover:shadow-2xl transition transform"
           >
             Play Now
-          </a>
-          <a href="#" className="px-5 py-3 rounded-full border border-white/30 text-white/90 hover:bg-white/10 transition">Watch Trailer</a>
+          </motion.a>
+          <motion.a whileHover={reduce ? {} : { scale: 1.02 }} whileTap={{ scale: 0.98 }} href="#" className="px-5 py-3 rounded-full border border-white/30 text-white/90 hover:bg-white/10 transition">Watch Trailer</motion.a>
         </motion.div>
 
         <motion.div className="mt-10 opacity-80 text-sm text-white/80"> 
@@ -102,6 +106,9 @@ const Hero = () => {
         .animate-gradient-xy{ background-size:200% 200%; animation: gradient-xy 8s ease infinite; }
         .animate-pulse-slow{ animation: pulse 6s ease-in-out infinite; }
         .animate-pulse-slower{ animation: pulse 8s ease-in-out infinite; }
+        @media (prefers-reduced-motion: reduce) {
+          .animate-gradient-xy, .animate-pulse-slow, .animate-pulse-slower, .animate-bounce { animation: none !important }
+        }
       `}</style>
     </section>
   )
