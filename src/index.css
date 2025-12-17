@@ -13,4 +13,19 @@
     --bg: #000;
     --fg: 229 231 235;
   }
+
+  /* Improve font rendering and respectful motion preferences */
+  html, body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }
