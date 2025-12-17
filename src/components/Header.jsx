@@ -1,91 +1,79 @@
-import React from 'react'
-import 'boxicons/css/boxicons.min.css';
+import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
+import 'boxicons/css/boxicons.min.css'
 
-const Header = () => {
+const navItems = [
+  { label: 'Avatar', href: '#', icon: 'bx bx-user-circle' },
+  { label: 'Arena', href: '#arena', icon: 'bx bx-diamond' },
+  { label: 'Beyond', href: '#', icon: 'bx bx-chevrons-up' },
+  { label: 'Shop', href: '#shop', icon: 'bx bx-store' }
+]
 
-//simple function to toggle mobile menu
-const toggleMobileMenu = () => {
-    //get the mobile menu element
-    const mobileMenu = document.getElementById('mobileMenu');
+export default function Header(){
+  const [open, setOpen] = useState(false)
+  const [dark, setDark] = useState(() => localStorage.getItem('theme') === 'dark')
 
-//toggle the 'hidden' class remove it otherwise add it
-if (mobileMenu.classList.contains('hidden')) {
-    mobileMenu.classList.remove('hidden');
-} else {
-    mobileMenu.classList.add('hidden')
-}
-}
-
+  useEffect(() => {
+    if (dark) document.documentElement.classList.add('dark')
+    else document.documentElement.classList.remove('dark')
+    localStorage.setItem('theme', dark ? 'dark' : 'light')
+  }, [dark])
 
   return (
-    <header className="py-1 px-7 flex justify-between items-center  sticky  top-0 z-50 w-full border-b-[0.3px] border-[#babaff] bg-black">
-        {/*Left section*/}
-        <div className='flex lg:gap-14 gap-4 items-center'>
-        <img className="md:w-16 w-12" src="/images/logo.png" alt="logo" />
-       
-       <div className='hidden md:flex gap-5 items-center'>
-        <button className='h-8 px-6 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-lg font-medium text-nowrap hover:opacity-70 transition-all duration-300'>
-            PLAY Now
-        </button>
-         <button className='h-8 px-6 bg-gradient-to-r from-gray-600 to-gray-400 rounded-lg font-medium text-nowrap hover:opacity-70 transition-all duration-300'>
-            PLAY
-        </button>
-       </div>
+    <header className="sticky top-0 z-50 w-full backdrop-blur-sm bg-white/40 dark:bg-black/40 border-b border-gray-200 dark:border-gray-800">
+      <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <img src="/images/logo.png" alt="logo" className="h-10 w-auto" />
+          <div className="hidden md:flex gap-3">
+            <button className="h-9 px-4 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow hover:scale-105 transition">Play Now</button>
+            <button className="h-9 px-4 rounded-full bg-gray-800/10 dark:bg-white/10 text-gray-800 dark:text-white shadow hover:scale-105 transition">NFT Store</button>
+          </div>
         </div>
-        {/*Right section*/}
-        <nav className='hidden md:flex lg:gap-8 gap-4'>
-            <a href="#" className="relative py-1 text-lg hover:text-purple-300 transition-colors duration-300 after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-purple-400 after:left-0 after:bottom-0 after:transition-all hover:after:w-full text-nowrap">
-                <i className='bx bx-user-circle'></i> Avatar
-            </a>
-              <a href="#" className="relative py-1 text-lg hover:text-purple-300 transition-colors duration-300 after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-purple-400 after:left-0 after:bottom-0 after:transition-all hover:after:w-full text-nowrap">
-                <i className='bx bx-diamond'></i> Arena
-            </a>
-              <a href="#" className="relative py-1 text-lg hover:text-purple-300 transition-colors duration-300 after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-purple-400 after:left-0 after:bottom-0 after:transition-all hover:after:w-full text-nowrap">
-                <i className='bx bx-chevrons-up'></i> Beyond
-                </a>
-                  <a href="#" className="relative py-1 text-lg hover:text-purple-300 transition-colors duration-300 after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-purple-400 after:left-0 after:bottom-0 after:transition-all hover:after:w-full text-nowrap">
-                <i className='bx bx-store'></i> Shop
-            </a>
-            
+
+        <nav className="hidden md:flex items-center gap-6">
+          {navItems.map((n, i) => (
+            <motion.a key={n.label} href={n.href} className="relative text-sm md:text-base text-gray-800 dark:text-gray-200 hover:text-violet-500 transition"
+              whileHover={{ y: -3 }}
+              transition={{ type: 'spring', stiffness: 300 }}
+            >
+              <i className={n.icon + ' mr-2'} aria-hidden></i>
+              <span className="underline-animation">{n.label}</span>
+            </motion.a>
+          ))}
+
+          <button onClick={() => setDark(d => !d)} aria-label="Toggle theme" className="p-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition">
+            {dark ? <i className="bx bx-sun"/> : <i className="bx bx-moon"/>}
+          </button>
         </nav>
-{/*Mobile menu button-visible only on mobile*/}
-<button onclick={toggleMobileMenu} className='text-3xl p-2 md:hidden'>
-    <i className='bx bx-menu'></i>
-    <div id="mobileMenu" className='hidden fixed top-14 right-0 left-0 bg-black p-5 md:hidden'>
 
+        {/* Mobile */}
+        <div className="md:hidden flex items-center gap-3">
+          <button onClick={() => setDark(d => !d)} aria-label="Toggle theme" className="p-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition">
+            {dark ? <i className="bx bx-sun"/> : <i className="bx bx-moon"/>}
+          </button>
 
-    <nav className='flex flex-col gap-4 items-center'>
-            <a href="#" className="relative py-1 text-lg hover:text-purple-300 transition-colors duration-300 after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-purple-400 after:left-0 after:bottom-0 after:transition-all hover:after:w-full text-nowrap">
-                <i className='bx bx-user-circle'></i> Avatar
-            </a>
-              <a href="#" className="relative py-1 text-lg hover:text-purple-300 transition-colors duration-300 after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-purple-400 after:left-0 after:bottom-0 after:transition-all hover:after:w-full text-nowrap">
-                <i className='bx bx-diamond'></i> Arena
-            </a>
-              <a href="#" className="relative py-1 text-lg hover:text-purple-300 transition-colors duration-300 after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-purple-400 after:left-0 after:bottom-0 after:transition-all hover:after:w-full text-nowrap">
-                <i className='bx bx-chevrons-up'></i> Beyond
-                </a>
-                  <a href="#" className="relative py-1 text-lg hover:text-purple-300 transition-colors duration-300 after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-purple-400 after:left-0 after:bottom-0 after:transition-all hover:after:w-full text-nowrap">
-                <i className='bx bx-store'></i> Shop
-            </a>
-            
-        </nav>
-       <div className='flex flex-col gap-3 w-full mt-4'>
-        <button className='bg-purple-700 py-2 rounded'>
-Play Now
-        </button>
-                <button className='bg-gray-500 py-2 rounded'>
-NFT Store
-        </button>
-       </div>
+          <button onClick={() => setOpen(o => !o)} aria-expanded={open} aria-controls="mobileMenu" className="p-2 rounded text-2xl text-gray-700 dark:text-gray-200">
+            <i className={`bx ${open ? 'bx-x' : 'bx-menu'}`}></i>
+          </button>
+        </div>
 
-</div>
-</button>
-{/*Mobile menu - hidden by default*/}
+        {/* Mobile menu */}
+        {open && (
+          <div id="mobileMenu" className="absolute right-4 left-4 top-16 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-4 md:hidden">
+            <nav className="flex flex-col gap-3">
+              {navItems.map(n => (
+                <a key={n.label} href={n.href} className="text-gray-800 dark:text-gray-200 hover:text-violet-500">{n.label}</a>
+              ))}
+              <div className="mt-3 flex gap-2">
+                <button className="flex-1 py-2 rounded bg-gradient-to-r from-purple-500 to-indigo-600 text-white">Play Now</button>
+                <button className="flex-1 py-2 rounded bg-gray-800/10 dark:bg-white/10">NFT Store</button>
+              </div>
+            </nav>
+          </div>
+        )}
+      </div>
 
-
+      <style>{`.underline-animation::after{ content:''; position:absolute; left:0; bottom:-4px; height:2px; width:0; background:linear-gradient(90deg,#8b5cf6,#7c3aed); transition: width .25s ease } .underline-animation:hover::after{ width:100% }`}</style>
     </header>
   )
 }
-
-
-export default Header

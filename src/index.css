@@ -3,7 +3,14 @@
 @tailwind utilities;
 
 @layer base{
-    body {
-        @apply bg-black text-white relative font-sans h-screen overflow-x-hidden;
-    }
+  body {
+    @apply bg-white text-gray-900 relative font-sans min-h-screen overflow-x-hidden;
+    --bg: white;
+    --fg: 229 231 235; /* slate-200 fallback */
+  }
+  .dark body{
+    @apply bg-black text-white;
+    --bg: #000;
+    --fg: 229 231 235;
+  }
 }
