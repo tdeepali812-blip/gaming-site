@@ -74,7 +74,7 @@ const handle3DAreaMouseLeave = () => setCursorInModelArea(false)
 
 
   return (
-    <div className='relative w-full h-screen overflow-hidden mb-[10%]'>
+    <motion.section initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.12 }} transition={{ duration: 0.7 }} className='relative w-full h-screen overflow-hidden mb-[10%]'>
 
 <CustomCursor active={cursorInModelArea} />
 
@@ -182,7 +182,7 @@ onMouseLeave={handle3DAreaMouseLeave}>
 </div>
 
 </div>
-    </div>
+    </motion.section>
   )
 }
 
