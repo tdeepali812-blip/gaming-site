@@ -43,7 +43,7 @@ const Hero = () => {
         loop
         muted
         playsInline
-        preload="metadata"
+        preload="none"
         className="hidden lg:block absolute inset-0 w-full h-full object-cover opacity-30"
       />
 
