@@ -1,59 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { Star } from 'lucide-react';
-import {motion, AnimatePresence} from 'framer-motion';
-import Spline from'@splinetool/react-spline';
+import React, { useEffect, useState } from 'react'
+import { Star } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import Spline from '@splinetool/react-spline'
 
-//the custom cursor component to accept ishovwering3d prop
-function customCursor(ishovering3d){
-    const[postion, setPosition]=useState({x:0,y:0});
-    const cursorRef=React.useRef(null);
+function CustomCursor({ active }) {
+  const [pos, setPos] = useState({ x: -100, y: -100 })
 
-    useEffect(()=>{
-        const mouseMoveHandler=(e)=>{
-            setPosition({x:e.clientX,y:e.clientY});
-        };
-        document.addEventListener('mousemove',mouseMoveHandler);
-        return()=>{
-            document.removeEventListener('mousemove',mouseMoveHandler);
-        }
-    })
-    return(
-       <motion.div 
-       ref={cursorRef}
-       className="fixed top-0 left-0 z-50 pointer-events-none mix-blend-difference"
-       animate={{
-        x:postion.x- (ishovering3d ? 12 : 15),
-        y:postion.y- (ishovering3d ? 12 : 15),
-        scale: ishovering3d ? 1.5 : 1,
-       }}
-       transition={{
-        type:'spring',
-        stiffness:500,
-        damping:28,
-        mass:0.5,
-       }}
-       >
-        <motion.div  
-        className={`rounded-full ${isHovering3D ? "bg-violet-500" :"bg-white"}`}
-       animate={{
-        width: ishovering3d ? "24px" : "40px",
-        height: ishovering3d ? "24px" : "40px",
-       }}
-       transition={{duration:0.2}}
-       />
-       {isHovering3D && (
-        <motion.div
-        className='absolute inset-0 rounded-full bg-tansition border border-violet-500'
-        initial={{scale:0.5, opacity:0}}
-        animate={{scale:2, opacity:0.5}}
-        transition={{duration:1, repeat:Number, POSITIVE_INFINITY}}
-      
-    />
-    )}
+  useEffect(() => {
+    const onMove = (e) => setPos({ x: e.clientX, y: e.clientY })
+    window.addEventListener('mousemove', onMove)
+    return () => window.removeEventListener('mousemove', onMove)
+  }, [])
 
-       </motion.div>
-     
-    )
+  return (
+    <motion.div className="fixed pointer-events-none z-50" style={{ left: pos.x - 12, top: pos.y - 12 }}>
+      <div className={`w-6 h-6 rounded-full ${active ? 'bg-violet-500' : 'bg-white'} shadow-lg`} />
+    </motion.div>
+  )
 }
 
 const Characters = () => {
@@ -66,52 +29,54 @@ const [cursorInModelArea, setCursorInModelArea] = useState(false);
 
 
 
-//simpilified avatar data
-const Avatar={
-    VIKI:{
-        name:"VIKI",
-        power:75,
-        stable:90,
-        penetrate:75,
-        portable:60,
-        stars:3,
+// avatars list and helpers
+const avatars = [
+  {
+    id: 'VIKI',
+    name: 'VIKI',
+    img: '/images/VIKI.png',
+    power: 75,
+    stable: 90,
+    penetrate: 75,
+    portable: 60,
+    stars: 3,
+    scene: 'https://prod.spline.design/ZzPUlJkXPC-8AXMt/scene.splinecode'
+  },
+  {
+    id: 'EVA',
+    name: 'EVA',
+    img: '/images/EVA.png',
+    power: 80,
+    stable: 85,
+    penetrate: 70,
+    portable: 75,
+    stars: 3,
+    scene: 'https://prod.spline.design/1PgSUTO1c0oZT522/scene.splinecode'
+  },
+  {
+    id: 'LEXA',
+    name: 'LEXA',
+    img: '/images/VIKI.png',
+    power: 85,
+    stable: 80,
+    penetrate: 70,
+    portable: 65,
+    stars: 4,
+    scene: ''
+  }
+]
 
-},
-    LEXA:{
-        name:"LEXA",
-        power:85,   
-        stable:80,
-        penetrate:70,
-        portable:65,    
-        stars:4,
+const currentAvatar = avatars.find((a) => a.id === selectedAvatar)
 
-},
-    EVA: {
-        name: 'EVA',
-        power: 80,
-        stable: 85,
-        penetrate: 70,
-        portable: 75,
-        stars: 3,
-    }
-}
-//get current avatar data
-const currentAvatar = Avatar[selectedAvatar];
-
-const handle3DAreaMouseEnter = () => {
-    setCursorInModelArea(true);
-};
-
-const handle3DAreaMouseLeave = () => {
-    setCursorInModelArea(false);
-};
+const handle3DAreaMouseEnter = () => setCursorInModelArea(true)
+const handle3DAreaMouseLeave = () => setCursorInModelArea(false)
 
 
 
   return (
     <div className='relative w-full h-screen overflow-hidden mb-[10%]'>
 
-< customCursor isHovering3D={cursorInModelArea}/>
+<CustomCursor active={cursorInModelArea} />
 
 {/*section title */}
 <div className='relative z-10 pt-6 text-center'>
@@ -134,41 +99,16 @@ const handle3DAreaMouseLeave = () => {
 
 
 {/* Avatar statistics */}
-        <div className='space-y-3 mb-16'>
-            {/* Stat rows - label + full rounded background with gradient fill */}
-            <div className='flex items-center '>
-                <span className='w-24 text-gray-400 '>Power</span>
-                <div className='flex-1 h-4 bg-gray-800 rounded-full overflow-hidden'>
-                    <div className='h-full rounded-full bg-gradient-to-r from-violet-600 via-purple-500 to-white' style={{width:`${currentAvatar.power}%`}} />
-                </div>
-                <span className='ml-2'>{currentAvatar.power}</span>
+        <div className='space-y-3 mb-6'>
+          {[['Power', currentAvatar.power], ['Stable', currentAvatar.stable], ['Penetrate', currentAvatar.penetrate], ['Portable', currentAvatar.portable]].map(([label, value]) => (
+            <div className='flex items-center' key={label}>
+              <span className='w-24 text-gray-400'>{label}</span>
+              <div className='flex-1 h-4 bg-gray-800 rounded-full overflow-hidden'>
+                <div className='h-full rounded-full bg-gradient-to-r from-violet-600 via-purple-500 to-white' style={{ width: `${value}%` }} />
+              </div>
+              <span className='ml-2'>{value}</span>
             </div>
-            
- {/*stable stat */}
-            <div className='flex items-center '>
-                <span className='w-24 text-gray-300 '>Stable</span>
-                <div className='flex-1 h-4 bg-gray-700 rounded-full overflow-hidden'>
-                    <div className='h-full rounded-full bg-gradient-to-r from-violet-600 via-purple-500 to-white' style={{width:`${currentAvatar.stable}%`}} />
-                </div>
-                <span className='ml-2'>{currentAvatar.stable}</span>
-            </div>
- {/*penterate stat */}
-            <div className='flex items-center '>
-                <span className='w-24 text-gray-300 text-sm'>Penetrate</span>
-                <div className='flex-1 h-4 bg-gray-700 rounded-full overflow-hidden'>
-                    <div className='h-full rounded-full bg-gradient-to-r from-violet-600 via-purple-500 to-white' style={{width:`${currentAvatar.penetrate}%`}} />
-                </div>
-                <span className='ml-2'>{currentAvatar.penetrate}</span>
-            </div>
-
-            <div className='flex items-center '>
-                <span className='w-24 text-gray-300 text-sm'>Portable</span>
-                <div className='flex-1 h-4 bg-gray-700 rounded-full overflow-hidden'>
-                    <div className='h-full rounded-full bg-gradient-to-r from-violet-600 via-purple-500 to-white' style={{width:`${currentAvatar.portable}%`}} />
-                </div>
-              <span className='ml-2'>{currentAvatar.portable}</span>
-            </div>
-
+          ))}
         </div>
 {/* Action buttons */}
 <div className='flex gap-3'>
@@ -187,50 +127,31 @@ const handle3DAreaMouseLeave = () => {
 </div>
 {/* Avatar selection cards */}
                 <div className='grid grid-cols-2 gap-4'>
-                    {/* VIKI card */}
-                    <div onClick={()=>setSelectedAvatar('VIKI')} className='relative bg-gray-900/70 backdrop-blur-sm rounded-lg p-6 border flex flex-col items-center text-center cursor-pointer transition-all duration-300'
-                        onclick={()=>setSelectedAvatar('VIKI')}>
-                        <div className='text-lg mb-3 text-white font-medium'>{Avatar.VIKI.name}</div>
+                  {avatars.map((a) => (
+                    <div
+                      key={a.id}
+                      onClick={() => setSelectedAvatar(a.id)}
+                      className={`relative bg-gray-900/70 backdrop-blur-sm rounded-lg p-6 border flex flex-col items-center text-center cursor-pointer transition-transform transform ${
+                        selectedAvatar === a.id ? 'ring-2 ring-violet-500 scale-105' : 'hover:-translate-y-1'
+                      }`}
+                    >
+                      <div className='text-lg mb-3 text-white font-medium'>{a.name}</div>
 
-                        {/* Avatar visual placeholder */}
-                        <div className='w-20 h-20 bg-gray-800/50 flex items-center justify-center mb-3 rounded-md'>
-                            <img src="public\images\VIKI.png" alt='Viki' className='w-16 h-16 object-cover rounded-md' />
-                        </div>
+                      <div className='w-20 h-20 bg-gray-800/50 flex items-center justify-center mb-3 rounded-md'>
+                        <img src={a.img} alt={a.name} className='w-16 h-16 object-cover rounded-md' />
+                      </div>
 
-                        {/* Star rating - outlined white stars */}
-                        <div className='flex items-center gap-2'>
-                            {[...Array(Avatar.VIKI.stars)].map((_, i) => (
-                                <Star key={i} size={20} strokeWidth={1.8} className='text-white stroke-current fill-violet-500'  />
-                            ))}
-                        </div>
-                        {/* highlight for selected avatar */}
-                        {selectedAvatar === 'VIKI' && (
-                            <div className='absolute inset-0 border-4 border-violet-500 rounded-lg pointer-events-none'></div>
-                        )}
+                      <div className='flex items-center gap-2'>
+                        {[...Array(a.stars)].map((_, i) => (
+                          <Star key={i} size={18} />
+                        ))}
+                      </div>
+
+                      {selectedAvatar === a.id && (
+                        <div className='absolute inset-0 border-4 border-violet-500 rounded-lg pointer-events-none'></div>
+                      )}
                     </div>
-
- {/* eva card */}
-                    <div onClick={()=>setSelectedAvatar('EVA')} className='relative bg-gray-900/70 backdrop-blur-sm rounded-lg p-6 border flex flex-col items-center text-center cursor-pointer transition-all duration-300' onclick={()=>setSelectedAvatar('VIKI')}>
-                        <div className='text-lg mb-3 text-white font-medium'>{Avatar.EVA.name}</div>
-
-                        {/* Avatar visual placeholder */}
-                        <div className='w-20 h-20 bg-gray-800/50 flex items-center justify-center mb-3 rounded-md'>
-                            <img src="public\images\EVA.png" alt='EVA' className='w-16 h-16 object-cover rounded-md' />
-                        </div>
-
-                        {/* Star rating - outlined white stars */}
-                        <div className='flex items-center gap-2'>
-                            {[...Array(Avatar.EVA.stars)].map((_, i) => (
-                                <Star key={i} size={20} strokeWidth={1.8} className='text-white stroke-current fill-violet-500'  />
-                            ))}
-                        </div>
-                        {/* highlight for selected avatar */}
-                        {selectedAvatar === 'EVA' && (
-                            <div className='absolute inset-0 border-4 border-violet-500 rounded-lg pointer-events-none'></div>
-                        )}
-                    </div>
-                    
-                    
+                  ))}
                 </div>
 
 
@@ -241,35 +162,22 @@ const handle3DAreaMouseLeave = () => {
 onMouseEnter={handle3DAreaMouseEnter}
 onMouseLeave={handle3DAreaMouseLeave}>
   <AnimatePresence mode="wait">
-    {selectedAvatar === "VIKI" ? (
-      <motion.div
-        key="VIKI"
-        className="absolute inset-0 flex items-center justify-center"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1.4 }}   
-        exit={{ opacity: 0, scale: 0.8 }}
-        transition={{ duration: 0.6 }}
-      >
-        <Spline 
-          scene="https://prod.spline.design/ZzPUlJkXPC-8AXMt/scene.splinecode"
-          className="w-full h-full"
-        />
-      </motion.div>
-    ) : (
-      <motion.div
-        key="EVA"
-        className="absolute inset-0 flex items-center justify-center"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1.4 }}   
-        exit={{ opacity: 0, scale: 0.8 }}
-        transition={{ duration: 0.6 }}
-      >
-        <Spline 
-          scene="https://prod.spline.design/1PgSUTO1c0oZT522/scene.splinecode"
-          className="w-full h-full"
-        />
-      </motion.div>
-    )}
+    <motion.div
+      key={currentAvatar.id}
+      className="absolute inset-0"
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.98 }}
+      transition={{ duration: 0.5 }}
+    >
+      {currentAvatar.scene ? (
+        <Spline scene={currentAvatar.scene} className="w-full h-full" />
+      ) : (
+        <div className="w-full h-full flex items-center justify-center bg-gradient-to-tr from-violet-600 to-indigo-500">
+          <div className="text-white font-bold text-xl">Model coming soon</div>
+        </div>
+      )}
+    </motion.div>
   </AnimatePresence>
 </div>
 
